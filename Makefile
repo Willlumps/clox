@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 
 all: memory.o chunk.o main.o debug.o value.o
 	$(CC) $(CFLAGS) -o clox memory.o chunk.o  main.o debug.o value.o
