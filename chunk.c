@@ -53,28 +53,45 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line) {
     }
 
     LineStart *linestart = &chunk->lines[chunk->lineCount++];
-    linestart->offset = chunk->count + 1;
+    linestart->offset = chunk->count - 1;
     linestart->line = line;
 }
 
-// Append a constant to a chunk
+void writeConstant(Chunk *chunk, Value value, int line) {
+    int index = addConstant(chunk, value);
+    if (index < 256) {
+        writeChunk(chunk, OP_CONSTANT, line);
+        writeChunk(chunk, (uint8_t)index, line);
+    } else {
+        writeChunk(chunk, OP_CONSTANT_LONG, line);
+        writeChunk(chunk, (uint8_t)(index & 0xff), line);
+        writeChunk(chunk, (uint8_t)((index >> 8)  & 0xff), line);
+        writeChunk(chunk, (uint8_t)((index >> 16)  & 0xff), line);
+    }
+}
+
+// Append a constant to the value array and return the number of
+// constants in the array
 int addConstant(Chunk *chunk, Value value) {
     writeValueArray(&chunk->constants, value);
     return chunk->constants.count - 1;
 }
 
 int getLine(Chunk *chunk, int instruction) {
+    if (instruction == 0) {
+        return chunk->lines[0].line;
+    }
     int start = 0;
     int end = chunk->lineCount - 1;
 
     for (;;) {
         int mid = (start + end) / 2;
         LineStart *line = &chunk->lines[mid];
-        if (mid == chunk->lineCount - 1 ||
+        if (instruction < line->offset) {
+            end = mid - 1;
+        } else if (mid == chunk->lineCount - 1 ||
             instruction < chunk->lines[mid + 1].offset) {
             return line->line;
-        } else if(instruction < line->offset) {
-            end = mid - 1;
         } else {
             start = mid + 1;
         }
