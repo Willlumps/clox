@@ -13,15 +13,20 @@ int main(int argc, const char* argv[]) {
   initChunk(&chunk);
 
   // Stores the index of the added constant
-  writeConstant(&chunk, 155, 10);
-  writeConstant(&chunk, 1.2, 123);
-  writeConstant(&chunk, 1.3, 124);
-  writeConstant(&chunk, 1.4, 124);
+
+  writeConstant(&chunk, 1.2, 125);
   writeConstant(&chunk, 1.5, 125);
 
+  
+  writeChunk(&chunk, OP_ADD, 125);
+
+  writeConstant(&chunk, 5.6, 125);
+
+  writeChunk(&chunk, OP_DIVIDE, 125);
+
+  writeChunk(&chunk, OP_NEGATE, 125);
   writeChunk(&chunk, OP_RETURN, 125);
-  writeChunk(&chunk, OP_RETURN, 125);
-  disassembleChunk(&chunk, "test");
+  //disassembleChunk(&chunk, "test");
   interpret(&chunk);
   freeVM();
   freeChunk(&chunk);
