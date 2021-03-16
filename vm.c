@@ -2,6 +2,7 @@
 
 #include "chunk.h"
 #include "common.h"
+#include "compiler.h"
 #include "debug.h"
 #include "memory.h"
 #include "vm.h"
@@ -72,7 +73,8 @@ static InterpretResult run() {
       case OP_SUBTRACT: BINARY_OP(-); break;
       case OP_MULTIPLY: BINARY_OP(*); break;
       case OP_DIVIDE:   BINARY_OP(/); break;
-      case OP_NEGATE:   push(-pop()); break;
+      //case OP_NEGATE:   push(-pop()); break;
+      case OP_NEGATE:   vm.stack[vm.stackCount - 1] = -vm.stack[vm.stackCount - 1]; break;
       case OP_RETURN: {
         printValue(pop());
         printf("\n");
@@ -86,9 +88,8 @@ static InterpretResult run() {
 #undef BINARY_OP
 }
 
-InterpretResult interpret(Chunk* chunk) {
-  vm.chunk = chunk;
-  vm.ip = vm.chunk->code;
-  return run();
+InterpretResult interpret(const char* source) {
+  compile(source);
+  return INTERPRET_OK;
 }
 
