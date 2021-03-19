@@ -52,14 +52,14 @@ static InterpretResult run() {
 
   for (;;) {
 #ifdef DEBUG_TRACE_EXECUTION
-    printf("            ");
-    for (int slot = 0; slot < vm.stackCount; slot++) {
-      printf("[ ");
-      printValue(vm.stack[slot]);
-      printf(" ]");
-    }
-    printf("\n");
-    disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
+    //printf("            ");
+    //for (int slot = 0; slot < vm.stackCount; slot++) {
+    //  printf("[ ");
+    //  printValue(vm.stack[slot]);
+    //  printf(" ]");
+    //}
+    //printf("\n");
+    //disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
 #endif
     uint8_t instruction;
     switch (instruction = READ_BYTE()) {
