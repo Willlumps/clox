@@ -40,7 +40,7 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line) {
 
     // Are we on the same line?
     if (chunk->lineCount > 0 &&
-        chunk->lines[chunk->lineCount - 1].line == line) {
+        chunk->lines[chunk->lineCount - 1] == line) {
         return;
     }
 
@@ -48,13 +48,13 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line) {
     if (chunk->lineCapacity < chunk->lineCount + 1) {
         int oldCapacity = chunk->lineCapacity;
         chunk->lineCapacity = GROW_CAPACITY(oldCapacity);
-        chunk->lines = GROW_ARRAY(LineStart, chunk->lines,
+        chunk->lines = GROW_ARRAY(Chunk, chunk->lines,
             oldCapacity, chunk->lineCapacity);
     }
 
-    LineStart *linestart = &chunk->lines[chunk->lineCount++];
-    linestart->offset = chunk->count - 1;
-    linestart->line = line;
+    int linestart = chunk->lines[chunk->lineCount++];
+    linestart = chunk->count - 1;
+    linestart = line;
 }
 
 void writeConstant(Chunk *chunk, Value value, int line) {
@@ -79,19 +79,19 @@ int addConstant(Chunk *chunk, Value value) {
 
 int getLine(Chunk *chunk, int instruction) {
     if (instruction == 0) {
-        return chunk->lines[0].line;
+        return chunk->lines[chunk->lineCount];
     }
     int start = 0;
     int end = chunk->lineCount - 1;
 
     for (;;) {
         int mid = (start + end) / 2;
-        LineStart *line = &chunk->lines[mid];
-        if (instruction < line->offset) {
+        int line = chunk->lines[mid];
+        if (instruction < line) {
             end = mid - 1;
         } else if (mid == chunk->lineCount - 1 ||
-            instruction < chunk->lines[mid + 1].offset) {
-            return line->line;
+            instruction < chunk->lines[mid + 1]) {
+            return line;
         } else {
             start = mid + 1;
         }
