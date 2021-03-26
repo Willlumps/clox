@@ -48,7 +48,7 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line) {
     if (chunk->lineCapacity < chunk->lineCount + 1) {
         int oldCapacity = chunk->lineCapacity;
         chunk->lineCapacity = GROW_CAPACITY(oldCapacity);
-        chunk->lines = GROW_ARRAY(Chunk, chunk->lines,
+        chunk->lines = GROW_ARRAY(int, chunk->lines,
             oldCapacity, chunk->lineCapacity);
     }
 

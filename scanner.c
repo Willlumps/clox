@@ -149,8 +149,9 @@ static Token identifier() {
     advance();
   }
 
-  return makeToken(TOKEN_IDENTIFIER);
+  return makeToken(identifierType());
 }
+
 
 static Token number() {
   while (isDigit(peek())) {
