@@ -38,7 +38,7 @@ ObjString* copyString(const char* chars, int length) {
   return allocateString(heapChars, length);
 }
 
-void priontObject(Value value) {
+void printObject(Value value) {
   switch (OBJ_TYPE(value)) {
     case OBJ_STRING:
       printf("%s", AS_CSTRING(value));
